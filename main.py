@@ -1,8 +1,9 @@
-from typing import Union
-from  fastapi import  FastAPI
+from fastapi import FastAPI
+import db.mongo as mongo
 
-app  = FastAPI()
+app = FastAPI()
 
-@app.get('/')
+
+@app.get("/")
 def hello():
-    return {'msg': 'hello world'}
+    return {"msg": "hello world"}
