@@ -1,7 +1,5 @@
 import pytest
-import sys
 
-sys.path.insert(1, "src/")
 from src.services.emailservice import EmailService
 
 subj = "Email Teste Service"
@@ -16,6 +14,7 @@ email_seg = "pedrozle@outlook.com"
 @pytest.fixture
 def emailservice():
     return EmailService()
+
 
 @pytest.mark.asyncio
 async def test_enviar_email(emailservice):
