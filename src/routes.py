@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 
 
 app = FastAPI()
@@ -8,21 +8,10 @@ app = FastAPI()
 #                           ROTAS GET                           #
 # ############################################################# #
 
-@app.get("/", response_class=HTMLResponse)
+
+@app.get("/", response_class=JSONResponse)
 async def read_items():
-    return """
-    <html>
-        <head>
-            <title>Droplet</title>
-        </head>
-        <body>
-            <h1>Boas vindas ao <a href="/">Droplet</a>!</h1>
-            <p>Faça login ou cadastre-se para acessar a página</p>
-            <a href="/login">Login</a>
-            <a href="/cadastrar">Cadastrar</a>
-        </body>
-    </html>
-    """
+    return {"msg": "aaaaa"}
 
 
 @app.get("/login", response_class=HTMLResponse)
@@ -76,9 +65,11 @@ async def read_items():
     </html>
     """
 
+
 # ############################################################# #
 #                          ROTAS POST                           #
 # ############################################################# #
+
 
 @app.post("/login", response_class=HTMLResponse)
 async def read_items():
@@ -108,6 +99,7 @@ async def read_items():
         </body>
     </html>
     """
+
 
 # ############################################################# #
 #                           ROTAS PUT                           #

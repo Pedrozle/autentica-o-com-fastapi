@@ -14,7 +14,9 @@ class User:
             "name": 'user1',
             "perfil": 1,
             "username": 'user_name',
-            "password": 'user_password'
+            "password": 'user_password',
+            "email": 'user_email',
+            "email_seg": 'user_email_seg'
         }
         """
 
