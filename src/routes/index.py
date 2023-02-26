@@ -1,12 +1,12 @@
 from fastapi import FastAPI, Response, status, Request
 from fastapi.responses import HTMLResponse, JSONResponse
-from models.user import User
-import db.mongo as mongo
 
-import sys
-sys.path.insert(1, '/path/to/application/app/folder')
+from ..services.emailservice import EmailService
+from ..models.user import User
+from ..db.mongo import Mongo as mongo
 
 app = FastAPI()
+emailService = EmailService()
 
 # ############################################################# #
 #                           ROTAS GET                           #
@@ -114,10 +114,20 @@ async def cadastrar(user: User, res: Response):
     result = {'cadastrado': False}
     try:
         user_saved = mongo.inserir_na_colecao("usuarios", user.__dict__)
-        res.status_code = status.HTTP_201_CREATED
-        result = {'cadastrado': True, 'user_id': f"{user_saved.inserted_id}"}
-        print(result)
-        return result
+        if user_saved:
+            res.status_code = status.HTTP_201_CREATED
+            result = {'cadastrado': True, 'user_id': f"{user_saved.inserted_id}"}
+            try:
+                subj = 'Cadastro Realizado!'
+                corpo_email = """
+                    <h1>Boas Vindas à Droplet Social</h1>
+                    <p>Seu cadastro foi realizado com sucesso</p>
+                """
+                await emailService.enviar_email(subj, corpo_email, user.email)
+            except Exception as er:
+                print(f"Error  {er}")
+            print(result)
+            return result
     except Exception as e:
         print(e)
         result = {'cadastrado': False, 'status': 'Usuário já cadastrado'}

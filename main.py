@@ -1,4 +1,3 @@
-# import db.mongo as mongo
-from src.routes import app
+from src.routes.index import app
 
 app
