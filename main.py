@@ -1,3 +1,3 @@
-from src.routes.index import app
+from src.routes.user import app
 
 app
