@@ -1,6 +1,7 @@
 import pytest
-
-from src.services.tokengen import TokenGenerator
+import sys  
+sys.path.insert(1, "src")
+from services.tokengen import TokenGenerator
 
 
 @pytest.fixture
