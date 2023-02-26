@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 connection_str = os.getenv('DATABASE_CONNECTION')
+client: MongoClient
 try:
     client = MongoClient(connection_str)
 except Exception:
@@ -12,25 +13,26 @@ except Exception:
 else:
     print("Conectado ao Mongo")
 
-discord_db = client.discord_db
 
+db = client.fastapi
 
 # ----------------------- Funções para CRUD -----------------------
 
 # ---------------------- Funções para Create ----------------------
 def inserir_varios_na_colecao(nome_colecao: str, objs: list):
-    colecao = discord_db.get_collection(nome_colecao)
+    colecao = db.get_collection(nome_colecao)
     colecao.insert_many(objs)
 
 
 def inserir_na_colecao(nome_colecao: str, obj: dict):
-    colecao = discord_db.get_collection(nome_colecao)
-    colecao.insert_one(obj)
+    colecao = db.get_collection(nome_colecao)
+    x = colecao.insert_one(obj)
+    return x
 
 
 # ---------------------- Funções para Read ------------------------
 def buscar_varios_na_colecao(nome_colecao: str):
-    colecao = discord_db.get_collection(nome_colecao)
+    colecao = db.get_collection(nome_colecao)
     dados = colecao.find()
 
     resultado = []
@@ -41,14 +43,15 @@ def buscar_varios_na_colecao(nome_colecao: str):
     return resultado
 
 
-def buscar_um_na_colecao(nome_colecao: str, usuario: dict):
-    colecao = discord_db.get_collection(nome_colecao)
-    usuario = colecao.find_one(usuario)
-    return usuario
+def buscar_um_na_colecao(nome_colecao: str, obj: dict):
+    colecao = db.get_collection(nome_colecao)
+    res = colecao.find_one(obj)
+    print(res)
+    return res
 
 
 # ---------------------- Funções para Update ----------------------
-def atualizar_um_na_colecao(nome_colecao: str, usuario: dict, novos_dados: dict):
+def atualizar_um_na_colecao(nome_colecao: str, obj: dict, novos_dados: dict):
     """Atualiza os dados do objeto de acordo com os novos dados
 
     usuario = {
@@ -60,11 +63,11 @@ def atualizar_um_na_colecao(nome_colecao: str, usuario: dict, novos_dados: dict)
     }
 
     """
-    colecao = discord_db.get_collection(nome_colecao)
-    colecao.update_one(usuario, novos_dados)
+    colecao = db.get_collection(nome_colecao)
+    colecao.update_one(obj, novos_dados)
 
 
 # ---------------------- Funções para Delete ----------------------
-def apagar_um_na_colecao(nome_colecao: str, usuario: dict):
-    colecao = discord_db.get_collection(nome_colecao)
-    colecao.delete_one(usuario)
+def apagar_um_na_colecao(nome_colecao: str, obj: dict):
+    colecao = db.get_collection(nome_colecao)
+    colecao.delete_one(obj)

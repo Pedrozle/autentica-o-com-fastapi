@@ -1,24 +1,9 @@
-import json
-import sys
-
-sys.path.insert(1, "/path/to/application/app/folder")
-import db.mongo as mongo
+from pydantic import BaseModel
 
 
-class User:
-    def __init__(self, dict):
-
-        """Instancia um novo objeto User com os seguintes atributos:
-
-        userdict = {
-            "name": 'user1',
-            "perfil": 1,
-            "username": 'user_name',
-            "password": 'user_password',
-            "email": 'user_email',
-            "email_seg": 'user_email_seg'
-        }
-        """
-
-        for key in dict:
-            setattr(self, key, dict[key])
+class User(BaseModel):
+    name: str
+    username: str
+    email: str
+    password: str
+    perfil: int
