@@ -1,4 +1,4 @@
-[![Test](https://github.com/Pedrozle/autentica-o-com-fastapi/actions/workflows/test.yml/badge.svg?event=push)](https://github.com/Pedrozle/autentica-o-com-fastapi/actions/workflows/test.yml)
+[![Testes](https://github.com/Pedrozle/autentica-o-com-fastapi/actions/workflows/tests.yml/badge.svg?branch=main&event=push)](https://github.com/Pedrozle/autentica-o-com-fastapi/actions/workflows/tests.yml)
 # Autenticação com fastapi
 
 Um projeto FastAPI!
