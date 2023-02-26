@@ -1,0 +1,4 @@
+fastapi
+pymongo
+pytest
+pytest-asyncio
