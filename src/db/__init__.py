@@ -1,1 +1,1 @@
-import mongo
+from .mongo import Mongo

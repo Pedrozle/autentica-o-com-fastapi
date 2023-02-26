@@ -46,7 +46,6 @@ class Mongo:
     def buscar_um_na_colecao(nome_colecao: str, obj: dict):
         colecao = db.get_collection(nome_colecao)
         res = colecao.find_one(obj)
-        print(res)
         return res
 
 
