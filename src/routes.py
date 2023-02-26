@@ -1,5 +1,8 @@
-from main import app
+from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
+
+
+app = FastAPI()
 
 # ############################################################# #
 #                           ROTAS GET                           #

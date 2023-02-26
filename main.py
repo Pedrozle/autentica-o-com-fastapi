@@ -1,4 +1,4 @@
-from fastapi import FastAPI
 # import db.mongo as mongo
+from src.routes import app
 
-app = FastAPI()
+app
