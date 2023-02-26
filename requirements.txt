@@ -2,4 +2,4 @@ fastapi
 pymongo
 pytest
 pytest-asyncio
-dotenv
+python-dotenv
