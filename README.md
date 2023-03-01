@@ -20,6 +20,17 @@ Para ajuda ao iniciar projetos em FastAPI, visite a
 ## Instalação:
 
 -   Requisitos:
+    - para que o sistema execute  de forma correta, será necessário criar uma conexão com algum banco de dados, neste projeto foi
+utilizado [MongoDB](https://www.mongodb.com/). Será necessário criar uma conta, um projeto e por fim um banco.
+
+    - após isso, é necessário uma conta de email para que seja possível o envio de emails para os usuários no momento do login. [Aqui](https://www.google.com.br/search?q=como+permitir+o+email+para+um+app&sxsrf=AJOqlzVRuN03MfK4U2PKrD_DOGJCQk-wmw%3A1677635427181&source=hp&ei=Y6_-Y_nQCLjK1sQPnMOSqAs&iflsig=AK50M_UAAAAAY_69cztIB-wuqJKYwPgV8QvkaWhDsoWY&ved=0ahUKEwi5jsr9zrn9AhU4pZUCHZyhBLUQ4dUDCAg&uact=5&oq=como+permitir+o+email+para+um+app&gs_lcp=Cgdnd3Mtd2l6EAMyBwghEKABEAoyBwghEKABEAoyBwghEKABEAoyCAghEBYQHhAdMggIIRAWEB4QHTIICCEQFhAeEB0yCAghEBYQHhAdMggIIRAWEB4QHToECCMQJzoECAAQQzoFCC4QgAQ6CwgAEIAEELEDEIMBOhEILhCABBCxAxCDARDHARDRAzoKCC4QxwEQ0QMQQzoICAAQsQMQgwE6CAguEIAEEMkDOggIABCABBCxAzoFCAAQgAQ6BwgAEIAEEAo6BwgAEA0QgAQ6BggAEBYQHjoICAAQFhAeEAo6BQghEKABOgoIIRAWEB4QDxAdOgQIIRAVUABYhVpg6lpoBHAAeACAAesBiAH9LpIBBjAuMzQuMpgBAKABAQ&sclient=gws-wiz) você encontrará a solução para o gmail.
+
+    - por fim, é necessário a criação de um arquivo .env (sem nome, somente a extensão) para guardar os links e senhas de forma segura. Segue o template do arquivo .env:
+```js
+    DATABASE_CONNECTION= "string de conexao do mongodb"
+    EMAIL_ADDRESS = "endereco de email"
+    EMAIL_PSW = "senha de acesso de app"
+``` 
 
 executando o código abaixo, você garante que irá instalar todas as dependências necessárias
 
