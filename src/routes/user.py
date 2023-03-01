@@ -23,7 +23,7 @@ tokens = {}
 
 
 @app.get("/", response_class=HTMLResponse)
-async def read_items():
+async def index():
     return """
         <!DOCTYPE html>
         <html lang="en">
@@ -39,86 +39,10 @@ async def read_items():
             <p>Criado com <a href="https://github.com/tiangolo/fastapi">FastAPI</a> e <a href="https://www.python.org/">Python</a> </p>
             <h2>Documentação</h2>
             <p>Clique <a href="http://localhost:8000/docs">aqui</a> para acessar a documentação!</p>
-            <p>Clique <a href="http://localhost:8000/login">aqui</a> para acessar a página de Login!</p>
-            <p>Clique <a href="http://localhost:8000/cadastrar">aqui</a> para acessar a página de Cadastro!</p>
+            <p>Clique <a href="http://localhost:8000/admin/usuarios">aqui</a> para listar todos os usuários!</p>
         </body>
         </html>
     """
-
-
-@app.get("/login", response_class=HTMLResponse)
-async def read_items():
-    return """
-    <html>
-        <head>
-            <title>Droplet</title>
-        </head>
-        <body>
-            <h1>Boas vindas ao <a href="/">Droplet</a>!</h1>
-            <form method="post" action="/login" id="login">
-                <label for="email">Email</label>
-                <input type="email" name="email"/>
-                
-                <label for="password">Senha</label>
-                <input type="password" name="password"/>
-                
-                <button type="submit" value="Submit" formenctype=""application/json">Login</button>
-            </form>
-            
-        </body>
-    </html>
-    """
-
-@app.get("/login/autenticar", response_class=HTMLResponse)
-async def read_items():
-    return """
-    <html>
-        <head>
-            <title>Droplet</title>
-        </head>
-        <body>
-            <h1>Autenticar usuário!</h1>
-            <p>Foi enviado ao seu email de segurança um token de autenticação, digite-o abaixo</p>
-            <form method="post" action="/login" id="login">                
-                <label for="token">Senha</label>
-                <input type="text" name="token"/>
-                
-                <button type="submit" value="Submit" formenctype=""application/json">Login</button>
-            </form>
-            
-        </body>
-    </html>
-    """
-
-
-@app.get("/cadastrar", response_class=HTMLResponse)
-async def read_items():
-    return """
-    <html>
-        <head>
-            <title>Droplet</title>
-        </head>
-        <body>
-            <h1>Boas vindas ao <a href="/">Droplet</a>!</h1>
-            <form method="post" action="/cadastrar" id="cadastrar">
-                <label for="email">Email</label>
-                <input type="email" name="email"/>
-                
-                <label for="password">Senha</label>
-                <input type="password" name="password"/>
-
-                <label for="perfil">Perfil</label>
-                <select name="perfil">
-                    <option value="1">Usuário</option>
-                    <option value="2">Administrador</option>
-                </select>
-                
-                <button type="submit" form="cadastrar" value="Submit">Cadastrar</button>
-            </form>
-        </body>
-    </html>
-    """
-
 
 # ############################################################# #
 #                          ROTAS POST                           #
@@ -147,7 +71,7 @@ async def logar(req: Request, res: Response):
 
                 token = tokengen.gen()
                 username = user["username"]
-                tokens.update({f'{username}': f"{token}"})
+                tokens.update({f"{username}": f"{token}"})
                 print(tokens)
                 task = threading.Thread(target=async_timer, args=(username,))
                 task.start()
@@ -179,7 +103,8 @@ async def logar(req: Request, res: Response):
         res.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"Error": f"{e}"}
 
-@app.post('/login/autenticar', response_class=JSONResponse)
+
+@app.post("/login/autenticar", response_class=JSONResponse)
 async def autenticar(req: Request, res: Response):
     result = {"logado": False, "username": "", "perfil": 1, "autenticado": False}
     user_data = await req.json()
@@ -189,12 +114,8 @@ async def autenticar(req: Request, res: Response):
         )
         print(user)
         if user:
-            username:str = user_data["username"]
+            username: str = user_data["username"]
             token = user_data["token"]
-
-            print(username)
-            print(tokens[f'{username}'])
-            print(token)
 
             if username in tokens:
                 if tokens[username] == token:
@@ -226,6 +147,7 @@ async def autenticar(req: Request, res: Response):
         res.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"Error": f"{e}"}
 
+
 @app.post("/cadastrar", response_class=JSONResponse)
 async def cadastrar(user: User, res: Response):
     result = {"cadastrado": False}
@@ -248,6 +170,41 @@ async def cadastrar(user: User, res: Response):
         print(e)
         result = {"cadastrado": False, "status": "Usuário já cadastrado"}
         res.status_code = status.HTTP_409_CONFLICT
+        return result
+
+
+@app.post("/admin/changepermissions", response_class=JSONResponse)
+async def changePermissions(req: Request, res: Response):
+    result = {}
+    user_data = await req.json()
+    username: str = user_data["username"]
+    perfil: str = user_data["perfil"]
+    try:
+        user: User = mongo.buscar_um_na_colecao("usuarios", {"username": username})
+        if user:
+            result = {"username": username, "perfil antigo": user.perfil}
+            user.perfil = perfil
+            mongo.atualizar_um_na_colecao(
+                "usuarios", {user._id}, {"$set": {"perfil": perfil}}
+            )
+            print("perfil do usuario atualizado")
+            result = {
+                "username": username,
+                "perfil antigo": user.perfil,
+                "perfil atualizado": user.perfil,
+                "status": "atualizado",
+            }
+            res.status_code = status.HTTP_200_OK
+            return result
+        else:
+            print("usuário não encontrado")
+            result = {"erro": "username não encontrado"}
+            res.status_code = status.HTTP_404_NOT_FOUND
+            return result
+    except Exception as e:
+        print(f"error: {e}")
+        res.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        result = {"erro": e}
         return result
 
 
