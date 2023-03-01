@@ -34,7 +34,7 @@ async def index():
             <title>API</title>
         </head>
         <body>
-            <h1>FastAPI</h1>
+            <h1><a href="http://localhost:8000/">FastAPI</a></h1>
             <p>Se você está vendo esta página então tudo ocorreu corretamente!</p>
             <p>Criado com <a href="https://github.com/tiangolo/fastapi">FastAPI</a> e <a href="https://www.python.org/">Python</a> </p>
             <h2>Documentação</h2>
@@ -43,6 +43,42 @@ async def index():
         </body>
         </html>
     """
+
+
+@app.get("/admin/usuarios", response_class=HTMLResponse)
+async def getUsuarios():
+    usuarios = mongo.buscar_varios_na_colecao("usuarios")
+    code = ""
+    for i, usuario in enumerate(usuarios):
+        username = usuario["username"]
+        nome = usuario["name"]
+        email = usuario["email"]
+        email_seg = usuario["email_seg"]
+        perfil = usuario["perfil"]
+        json = "{"
+        json += f'"usuario" : {username},"nome" : {nome},"email" : {email},"email_seg" : {email_seg},"perfil" : {"Administrador" if perfil == 1 else "Usuario"}'
+        json += "}"
+        code += f"<code class='prettyprint'>{json}</code><br>"
+    return f"""
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>API</title>
+        </head>
+        <body>
+            <h1><a href="http://localhost:8000/">FastAPI</a></h1>
+            <p>Se você está vendo esta página então tudo ocorreu corretamente!</p>
+            <p>Criado com <a href="https://github.com/tiangolo/fastapi">FastAPI</a> e <a href="https://www.python.org/">Python</a> </p>
+            <h2>Admin, listagem de usuarios</h2>
+            {code}
+            <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+        </body>
+        </html>
+    """
+
 
 # ############################################################# #
 #                          ROTAS POST                           #
