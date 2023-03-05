@@ -8,9 +8,9 @@ def hashgen():
 
 
 def test_hashgen(hashgen):
-    data = "pytest".encode("utf-8")
+    data = "pytest"
     hash = hashgen.gen(data)
     assert (
         hash
-        == "1f3f1ad131e3c1f89c3319207733bb233d537ba0cd9ab3791580f235340ca537bf6c6a9dedcfeb03e05b331f5d3ae7a8d141a8a31b221e520f00be50d25f00e5"
+        == "$argon2id$v=19$m=65536,t=3,p=2$ceD06nAVfhMcTGwXkxXn9g$qn+4dwt+cMWB+XzFrJldXHBH+QVoVNOFJZKGmWtCw+g"
     )

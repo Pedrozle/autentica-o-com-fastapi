@@ -4,14 +4,16 @@ import threading
 from fastapi import FastAPI, Response, status, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 
-from services.emailservice import EmailService
-from services.tokengen import TokenGenerator
-from models.user import User
-from db.mongo import Mongo as mongo
+from src.services.emailservice import EmailService
+from src.services.tokengen import TokenGenerator
+from src.services.hashgen import HashGenerator
+from src.models.user import User
+from src.db.mongo import Mongo as mongo
 
 app = FastAPI()
 emailService = EmailService()
 tokengen = TokenGenerator()
+hashgen = HashGenerator()
 
 tokens = {}
 
@@ -87,13 +89,12 @@ async def getUsuarios():
 async def logar(req: Request, res: Response):
     result = {"logado": False, "username": "", "perfil": 1}
     user_login = await req.json()
-    print(user_login)
     try:
         user: User = mongo.buscar_um_na_colecao(
             "usuarios", {"email": user_login["email"]}
         )
         if user:
-            if user["password"] == user_login["password"]:
+            if hashgen.verify(user.password, user_login["password"]):
                 print("senhas batem")
                 result = {
                     "logado": True,
@@ -185,6 +186,10 @@ async def autenticar(req: Request, res: Response):
 @app.post("/cadastrar", response_class=JSONResponse)
 async def cadastrar(user: User, res: Response):
     result = {"cadastrado": False}
+
+    pwd = user.__dict__["password"]
+    pwd_hash = hashgen.gen(pwd)
+    user.__dict__["password"] = pwd_hash
     try:
         user_saved = mongo.inserir_na_colecao("usuarios", user.__dict__)
         if user_saved:
