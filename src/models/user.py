@@ -8,3 +8,18 @@ class User(BaseModel):
     email_seg: str
     password: str
     perfil: int
+
+
+class Login(BaseModel):
+    email: str
+    password: str
+
+
+class Autenticatable(BaseModel):
+    username: str
+    token: str
+
+
+class UpdateLogin(BaseModel):
+    username: str
+    perfil: int
