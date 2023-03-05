@@ -89,12 +89,12 @@ async def getUsuarios():
 async def logar(req: Request, res: Response):
     result = {"logado": False, "username": "", "perfil": 1}
     user_login = await req.json()
+    user_email = user_login["email"]
+    user_pwd = user_login["password"]
     try:
-        user: User = mongo.buscar_um_na_colecao(
-            "usuarios", {"email": user_login["email"]}
-        )
+        user = mongo.buscar_um_na_colecao("usuarios", {"email": user_email})
         if user:
-            if hashgen.verify(user.password, user_login["password"]):
+            if hashgen.verify(user["password"], user_pwd):
                 print("senhas batem")
                 result = {
                     "logado": True,
@@ -104,17 +104,20 @@ async def logar(req: Request, res: Response):
                 }
                 res.status_code = status.HTTP_200_OK
 
-                token = tokengen.gen()
                 username = user["username"]
-                tokens.update({f"{username}": f"{token}"})
-                print(tokens)
-                task = threading.Thread(target=async_timer, args=(username,))
-                task.start()
+                token_string = "Um token já foi enviado anteriormente, utilize-o"
+                if username not in tokens:
+                    token = tokengen.gen()
+                    token_string = ""
+                    tokens.update({f"{username}": f"{token}"})
+                    print(tokens)
+                    task = threading.Thread(target=async_timer, args=(username,))
+                    task.start()
                 corpo_email = f"""
                     <h1>Tentativa de login</h1>
                     <p>Foi identificado uma tentativa de login para {user['email']}</p>
                     <p>Foi gerado um token de autenticação para você, utilize para validar seu login:</p>
-                    <p style="display:block; align: center;">{token}</p>
+                    <p style="display:block; align: center;">{token if token_string == '' else token_string}</p>
                 """
                 await emailService.enviar_email(
                     subj="Autenticação de dois Fatores",

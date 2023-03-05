@@ -1,6 +1,4 @@
 import argon2
-import secrets
-import hashlib
 
 ph = argon2.PasswordHasher(
     time_cost=3,
