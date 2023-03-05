@@ -38,6 +38,9 @@ jobs:
                   echo EMAIL_ADDRESS=${{secrets.EMAIL_ADDRESS}} >> .env
                   echo EMAIL_PSW=${{secrets.EMAIL_PSW}} >> .env
                   cat .env
+                  
+    test:
+        steps:
             - name: Test with pytest
               run: |
                   pytest

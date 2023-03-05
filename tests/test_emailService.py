@@ -1,6 +1,6 @@
 import pytest
 
-from src.services.emailservice import EmailService
+from services.emailservice import EmailService
 
 subj = "Email Teste Service"
 corpo_email = """

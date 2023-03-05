@@ -4,11 +4,11 @@ import threading
 from fastapi import FastAPI, Response, status, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 
-from src.services.emailservice import EmailService
-from src.services.tokengen import TokenGenerator
-from src.services.hashgen import HashGenerator
-from src.models.user import User, Login, Autenticatable, UpdateLogin
-from src.db.mongo import Mongo as mongo
+from services.emailservice import EmailService
+from services.tokengen import TokenGenerator
+from services.hashgen import HashGenerator
+from models.user import User, Login, Autenticatable, UpdateLogin
+from db.mongo import Mongo as mongo
 
 app = FastAPI()
 emailService = EmailService()
