@@ -1,1 +1,1 @@
-from . import src
+from . import src, tests
