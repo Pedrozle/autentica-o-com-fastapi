@@ -4,8 +4,6 @@ import threading
 from fastapi import FastAPI, Response, status, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 
-sys.path.insert(1, "src")
-
 from services.emailservice import EmailService
 from services.tokengen import TokenGenerator
 from models.user import User

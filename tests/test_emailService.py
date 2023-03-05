@@ -1,8 +1,6 @@
 import pytest
-import sys
 
-sys.path.insert(1, "src")
-from services.emailservice import EmailService
+from src.services.emailservice import EmailService
 
 subj = "Email Teste Service"
 corpo_email = """
