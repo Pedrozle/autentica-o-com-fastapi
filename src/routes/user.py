@@ -7,7 +7,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from src.services.emailservice import EmailService
 from src.services.tokengen import TokenGenerator
 from src.services.hashgen import HashGenerator
-from src.models.user import User
+from src.models.user import User, Login, Autenticatable, UpdateLogin
 from src.db.mongo import Mongo as mongo
 
 app = FastAPI()
@@ -86,11 +86,10 @@ async def getUsuarios():
 
 
 @app.post("/login", response_class=JSONResponse)
-async def logar(req: Request, res: Response):
+async def logar(user_login: Login, res: Response):
     result = {"logado": False, "username": "", "perfil": 1}
-    user_login = await req.json()
-    user_email = user_login["email"]
-    user_pwd = user_login["password"]
+    user_email = user_login.__dict__["email"]
+    user_pwd = user_login.__dict__["password"]
     try:
         user = mongo.buscar_um_na_colecao("usuarios", {"email": user_email})
         if user:
@@ -143,17 +142,16 @@ async def logar(req: Request, res: Response):
 
 
 @app.post("/login/autenticar", response_class=JSONResponse)
-async def autenticar(req: Request, res: Response):
+async def autenticar(user_data: Autenticatable, res: Response):
     result = {"logado": False, "username": "", "perfil": 1, "autenticado": False}
-    user_data = await req.json()
     try:
         user: User = mongo.buscar_um_na_colecao(
-            "usuarios", {"username": user_data["username"]}
+            "usuarios", {"username": user_data.__dict__["username"]}
         )
         print(user)
         if user:
-            username: str = user_data["username"]
-            token = user_data["token"]
+            username: str = user_data.__dict__["username"]
+            token = user_data.__dict__["token"]
 
             if username in tokens:
                 if tokens[username] == token:
@@ -216,26 +214,23 @@ async def cadastrar(user: User, res: Response):
 
 
 @app.post("/admin/changepermissions", response_class=JSONResponse)
-async def changePermissions(req: Request, res: Response):
+async def changePermissions(user_data: UpdateLogin, res: Response):
     result = {}
-    user_data = await req.json()
-    username: str = user_data["username"]
-    perfil: str = user_data["perfil"]
+    username: str = user_data.__dict__["username"]
+    perfil: str = user_data.__dict__["perfil"]
     try:
         user: User = mongo.buscar_um_na_colecao("usuarios", {"username": username})
         if user:
-            result = {"username": username, "perfil antigo": user.perfil}
-            user.perfil = perfil
-            mongo.atualizar_um_na_colecao(
-                "usuarios", {user._id}, {"$set": {"perfil": perfil}}
-            )
+            result = {"username": username, "perfil_antigo": user["perfil"]}
+            user["perfil"] = perfil
+
+            filter = {"_id": user["_id"]}
+            new_values = {"$set": {"perfil": perfil}}
+
+            mongo.atualizar_um_na_colecao("usuarios", filter, new_values)
             print("perfil do usuario atualizado")
-            result = {
-                "username": username,
-                "perfil antigo": user.perfil,
-                "perfil atualizado": user.perfil,
-                "status": "atualizado",
-            }
+            result["perfil_atualizado"] = user["perfil"]
+            result["status"] = "atualizado"
             res.status_code = status.HTTP_200_OK
             return result
         else:
