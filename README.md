@@ -1,6 +1,7 @@
 # FastAPI
 
-[![Testes](https://github.com/Pedrozle/autentica-o-com-fastapi/actions/workflows/tests.yml/badge.svg?branch=main&event=push)](https://github.com/Pedrozle/autentica-o-com-fastapi/actions/workflows/tests.yml)
+[![Build Application](https://github.com/Pedrozle/autentica-o-com-fastapi/actions/workflows/build-app.yml/badge.svg?branch=main&event=push)](https://github.com/Pedrozle/autentica-o-com-fastapi/actions/workflows/build-app.yml)
+[![Run Tests](https://github.com/Pedrozle/autentica-o-com-fastapi/actions/workflows/tests-app.yml/badge.svg?branch=main)](https://github.com/Pedrozle/autentica-o-com-fastapi/actions/workflows/tests-app.yml)
 
 ## Autenticação com fastapi
 
