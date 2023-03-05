@@ -4,3 +4,4 @@ pytest
 pytest-asyncio
 python-dotenv
 uvicorn
+argon2-cffi
