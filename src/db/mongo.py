@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-connection_str = os.getenv('DATABASE_CONNECTION')
+connection_str = os.getenv("DATABASE_CONNECTION")
 client: MongoClient
 try:
     client = MongoClient(connection_str)
@@ -23,12 +23,10 @@ class Mongo:
         colecao = db.get_collection(nome_colecao)
         colecao.insert_many(objs)
 
-
     def inserir_na_colecao(nome_colecao: str, obj: dict):
         colecao = db.get_collection(nome_colecao)
         x = colecao.insert_one(obj)
         return x
-
 
     # ---------------------- Funções para Read ------------------------
     def buscar_varios_na_colecao(nome_colecao: str):
@@ -42,15 +40,13 @@ class Mongo:
 
         return resultado
 
-
     def buscar_um_na_colecao(nome_colecao: str, obj: dict):
         colecao = db.get_collection(nome_colecao)
         res = colecao.find_one(obj)
         return res
 
-
     # ---------------------- Funções para Update ----------------------
-    def atualizar_um_na_colecao(nome_colecao: str, obj: dict, novos_dados: dict):
+    def atualizar_um_na_colecao(nome_colecao: str, filter: dict, novos_dados: dict):
         """Atualiza os dados do objeto de acordo com os novos dados
 
         usuario = {
@@ -63,8 +59,7 @@ class Mongo:
 
         """
         colecao = db.get_collection(nome_colecao)
-        colecao.update_one(obj, novos_dados)
-
+        colecao.update_one(filter, novos_dados)
 
     # ---------------------- Funções para Delete ----------------------
     def apagar_um_na_colecao(nome_colecao: str, obj: dict):
